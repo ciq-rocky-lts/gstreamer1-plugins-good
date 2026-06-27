@@ -15,7 +15,7 @@
 
 Name:           gstreamer1-plugins-good
 Version:        1.16.1
-Release:        3%{?gitcommit:.git%{shortcommit}}%{?dist}
+Release:        6%{?gitcommit:.git%{shortcommit}}%{?dist}
 Summary:        GStreamer plugins with good code and licensing
 
 License:        LGPLv2+
@@ -29,8 +29,16 @@ Source0:        gst-plugins-good-%{version}.tar.xz
 Source0:        http://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-%{version}.tar.xz
 %endif
 
-Patch0:         d62cecf193d6bf3b16fe91d725f4514161f602c3.patch
-Patch1:         9efd93e20dd7789e4172ad6c8f4108271b3fb1ee.patch
+Patch0:		0001-matroskademux-Fix-extraction-of-multichannel-WavPack.patch
+Patch1:		0002-matroskademux-Initialize-track-context-out-parameter.patch
+Patch2:		0003-flacparse-Avoid-integer-overflow-in-available-data-c.patch
+Patch3:		0004-qtdemux-Avoid-integer-overflow-when-parsing-Theora-e.patch
+Patch4:		0005-gdkpixbufdec-Check-if-initializing-the-video-info-ac.patch
+Patch5:		0006-matroskademux-Only-unmap-GstMapInfo-in-WavPack-heade.patch
+Patch6:		0007-matroskademux-Fix-off-by-one-when-parsing-multi-chan.patch
+Patch7:		0008-qtdemux-Fix-integer-overflow-when-allocating-the-sam.patch
+Patch8:		0009-qtdemux-Make-sure-only-an-even-number-of-bytes-is-pr.patch
+Patch9:         0001-rtpqdm2depay-error-out-if-anyone-tries-to-use-this-e.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
@@ -166,6 +174,14 @@ to be installed.
 %setup -q -n gst-plugins-good-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
+%patch8 -p1
+%patch9 -p1
 
 %build
 %configure --disable-silent-rules --disable-fatal-warnings \
@@ -350,6 +366,21 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 
 %changelog
+* Tue Mar 31 2026 Wim Taymans <wtaymans@redhat.com> - 1.16.1-6
+- Add patch for CVE-2026-3083 and CVE-2026-3085
+  Resolves: RHEL-156183, RHEL-156153
+
+* Mon Dec 16 2024 Wim Taymans <wtaymans@redhat.com> - 1.16.1-5
+- CVE-2024-47537, CVE-2024-47539, CVE-2024-47540, CVE-2024-47606,
+  CVE-2024-47613
+  Resolves: RHEL-70949, RHEL-70962, RHEL-70936, RHEL-71022
+  Resolves: RHEL-70998
+
+* Wed Jan 17 2024 Wim Taymans <wtaymans@redhat.com> - 1.16.1-4
+- CVE-2023-37327: integer overflow leading to heap overwrite in
+  FLAC image tag handling
+- Resolves: RHEL-19469
+
 * Thu Jul 14 2022 Wim Taymans <wtaymans@redhat.com> - 1.16.1-3
 - Add patches for matroskademux. CVE-2021-3497
 - Resolves: rhbz#1948942
